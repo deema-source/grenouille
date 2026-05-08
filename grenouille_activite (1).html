@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La grenouille qui veut se faire aussi grosse que le bœuf</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --green: #2d7a3a;
+    --green-light: #4caf65;
+    --green-bg: #e8f5ea;
+    --pond: #1a6b8a;
+    --pond-light: #4da6c8;
+    --gold: #f5a623;
+    --gold-light: #ffd166;
+    --red: #d64045;
+    --red-light: #f28b8e;
+    --bg: #fdf6ec;
+    --white: #ffffff;
+    --text: #2c2c2c;
+    --text-light: #5a5a5a;
+    --border: #ddd;
+    --radius: 16px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #1a5c28 0%, #2d7a3a 40%, #1a6b8a 100%);
+    padding: 32px 20px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 40px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .hero-emoji {
+    font-size: clamp(48px, 10vw, 80px);
+    display: block;
+    margin-bottom: 10px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .hero h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(20px, 5vw, 34px);
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
+  }
+  .hero .subtitle {
+    font-size: clamp(13px, 3vw, 16px);
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+  }
+  .video-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50px;
+    padding: 8px 18px;
+    margin-top: 16px;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .video-badge:hover { background: rgba(255,255,255,0.35); }
+
+  /* STUDENT NAME */
+  .name-bar {
+    background: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    flex-wrap: wrap;
+  }
+  .name-bar label { font-weight: 700; font-size: 15px; white-space: nowrap; }
+  .name-bar input {
+    flex: 1;
+    min-width: 180px;
+    max-width: 320px;
+    padding: 8px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .name-bar input:focus { border-color: var(--green); }
+
+  /* PROGRESS */
+  .progress-bar-container {
+    padding: 10px 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .progress-bar-bg {
+    flex: 1;
+    height: 10px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-label { font-size: 13px; font-weight: 700; color: var(--text-light); white-space: nowrap; }
+
+  /* MAIN */
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* SECTION CARDS */
+  .section-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 18px 24px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(16px, 4vw, 20px);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-header .section-num {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.65;
+    margin-top: 2px;
+  }
+  .section-body { padding: 0 24px 24px; }
+
+  /* Color themes per section */
+  .sec-vf .section-header { background: #e8f5ea; }
+  .sec-vf .section-icon { background: var(--green); color: white; }
+  .sec-vf h2 { color: var(--green); }
+  .sec-order .section-header { background: #e3f0fb; }
+  .sec-order .section-icon { background: var(--pond); color: white; }
+  .sec-order h2 { color: var(--pond); }
+  .sec-trous .section-header { background: #fff8e6; }
+  .sec-trous .section-icon { background: var(--gold); color: white; }
+  .sec-trous h2 { color: #b87a00; }
+  .sec-prod .section-header { background: #fde8e8; }
+  .sec-prod .section-icon { background: var(--red); color: white; }
+  .sec-prod h2 { color: var(--red); }
+
+  /* CONSIGNE */
+  .consigne {
+    background: #f7f7f7;
+    border-left: 4px solid var(--pond);
+    padding: 10px 16px;
+    border-radius: 0 10px 10px 0;
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .sec-vf .consigne { border-color: var(--green); }
+  .sec-order .consigne { border-color: var(--pond); }
+  .sec-trous .consigne { border-color: var(--gold); }
+  .sec-prod .consigne { border-color: var(--red); }
+
+  /* VF / QCM */
+  .question-block {
+    margin-bottom: 22px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .question-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .question-text {
+    font-size: clamp(14px, 3.5vw, 16px);
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .question-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    background: var(--green);
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 800;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .sec-order .question-num { background: var(--pond); }
+  .sec-trous .question-num { background: var(--gold); color: #333; }
+  .options-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .option-btn {
+    padding: 9px 18px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .option-btn:hover { border-color: var(--green); background: var(--green-bg); }
+  .option-btn.selected { border-color: var(--pond); background: #e3f0fb; color: var(--pond); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: #fde8e8; color: var(--red); }
+  .option-btn.correct::after { content: ' ✓'; }
+  .option-btn.wrong::after { content: ' ✗'; }
+  .feedback {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--green-bg); color: var(--green); }
+  .feedback.ko { background: #fde8e8; color: var(--red); }
+
+  /* CHECK BTN */
+  .check-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  }
+  .check-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+  .check-btn:active { transform: translateY(0); }
+  .btn-green { background: var(--green); color: white; }
+  .btn-pond { background: var(--pond); color: white; }
+  .btn-gold { background: var(--gold); color: white; }
+
+  /* SCORE BADGE */
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 800;
+    margin-top: 14px;
+    display: none;
+  }
+  .score-badge.show { display: inline-flex; }
+  .score-badge.perfect { background: var(--gold-light); color: #7a5c00; }
+  .score-badge.good { background: var(--green-bg); color: var(--green); }
+  .score-badge.meh { background: #fde8e8; color: var(--red); }
+
+  /* ORDER EXERCISE */
+  .sortable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .sortable-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f5faff;
+    border: 2px solid #d0e8f5;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.2s;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 600;
+  }
+  .sortable-item:hover { border-color: var(--pond); background: #e3f0fb; }
+  .sortable-item.dragging { opacity: 0.4; border-style: dashed; }
+  .sortable-item.over { border-color: var(--gold); background: #fff8e6; }
+  .sortable-item.correct-pos { border-color: var(--green); background: var(--green-bg); }
+  .sortable-item.wrong-pos { border-color: var(--red); background: #fde8e8; }
+  .drag-handle { font-size: 20px; opacity: 0.5; cursor: grab; flex-shrink: 0; }
+  .step-num {
+    background: var(--pond);
+    color: white;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* Touch helper for drag */
+  @media (max-width: 600px) {
+    .sortable-item { cursor: pointer; }
+    .drag-handle { display: none; }
+    .touch-hint {
+      font-size: 12px;
+      color: var(--text-light);
+      text-align: center;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+  }
+  @media (min-width: 601px) { .touch-hint { display: none !important; } }
+
+  /* TEXTE À TROUS */
+  .trous-text {
+    line-height: 2.2;
+    font-size: clamp(14px, 3.5vw, 16px);
+    font-weight: 600;
+  }
+  .blank-input {
+    border: none;
+    border-bottom: 2.5px solid var(--gold);
+    background: #fff8e6;
+    padding: 2px 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(13px, 3.5vw, 15px);
+    font-weight: 700;
+    color: #7a5c00;
+    border-radius: 4px 4px 0 0;
+    outline: none;
+    width: clamp(70px, 20vw, 120px);
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .blank-input:focus { background: #ffef99; border-bottom-color: var(--pond); }
+  .blank-input.correct-blank { background: #c8f0d0; border-bottom-color: var(--green); color: var(--green); }
+  .blank-input.wrong-blank { background: #fdd; border-bottom-color: var(--red); color: var(--red); }
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 14px;
+    background: #fffbf0;
+    border-radius: 10px;
+    border: 1px dashed #e0c060;
+  }
+  .word-bank-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #7a5c00;
+    width: 100%;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .word-chip {
+    background: white;
+    border: 2px solid var(--gold);
+    color: #7a5c00;
+    border-radius: 50px;
+    padding: 4px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .word-chip:hover { background: var(--gold-light); }
+  .word-chip.used { opacity: 0.4; pointer-events: none; text-decoration: line-through; }
+
+  /* PRODUCTION ÉCRITE */
+  .prod-scenario {
+    background: linear-gradient(135deg, #fde8e8, #fff0e6);
+    border: 2px solid #f5c0a0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    font-size: clamp(14px, 3.5vw, 15px);
+    font-weight: 600;
+    line-height: 1.6;
+  }
+  .prod-scenario .scenario-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .prod-starters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .starter-chip {
+    background: #fde8e8;
+    border: 1.5px solid #f5a0a0;
+    color: var(--red);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .starter-chip:hover { background: #fcc; }
+  .starter-chip.active { background: #f5a0a0; color: white; border-color: var(--red); }
+  .prod-textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.7;
+  }
+  .prod-textarea:focus { border-color: var(--red); }
+  .word-count {
+    text-align: right;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .word-count.enough { color: var(--green); }
+
+  /* PDF BUTTON */
+  .pdf-section {
+    background: linear-gradient(135deg, #1a5c28, #1a6b8a);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+    color: white;
+    box-shadow: var(--shadow);
+  }
+  .pdf-section h3 {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(18px, 4vw, 22px);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .pdf-section p {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: var(--gold);
+    color: #3a2a00;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .pdf-btn:hover { background: #ffc840; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+  .pdf-btn:active { transform: translateY(0); }
+
+  /* GLOBAL SCORE */
+  .global-score {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 24px;
+    display: none;
+  }
+  .global-score.show { display: block; }
+  .global-score h3 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--green);
+  }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-pill {
+    padding: 3px 12px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 800;
+    background: var(--green-bg);
+    color: var(--green);
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    .section-body { padding: 0 16px 20px; }
+    .section-header { padding: 14px 16px 12px; }
+    .name-bar { gap: 8px; }
+    .options-grid { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-emoji">🐸</span>
+  <h1>La grenouille qui veut se faire<br>aussi grosse que le bœuf</h1>
+  <p class="subtitle">Activité de compréhension — CM2</p>
+  <a class="video-badge" href="https://youtu.be/MLf6EHayuQE?feature=shared" target="_blank">
+    ▶ Revoir la vidéo
+  </a>
+</div>
+
+<!-- NOM -->
+<div class="name-bar">
+  <label for="studentName">👤 Ton prénom et nom :</label>
+  <input type="text" id="studentName" placeholder="Écris ton nom ici…" />
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar-container">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 4 exercices</div>
+</div>
+
+<main>
+
+  <!-- ======================== EXERCICE 1 : VRAI / FAUX & QCM ======================== -->
+  <div class="section-card sec-vf">
+    <div class="section-header">
+      <div class="section-icon">🎯</div>
+      <div>
+        <div class="section-num">EXERCICE 1</div>
+        <h2>Vrai ou Faux — et explique pourquoi !</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="consigne">📌 Lis chaque phrase. Choisis VRAI ou FAUX, puis explique ta réponse avec tes mots.</div>
+
+      <!-- PARTIE VRAI / FAUX -->
+      <p style="font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--green);margin-bottom:14px;margin-top:4px;">✅ Vrai ou Faux</p>
+
+      <!-- Q1 -->
+      <div class="question-block" data-q="1">
+        <div class="question-text"><span class="question-num">1</span>La grenouille voit un bœuf et décide de devenir aussi grande que lui.</div>
+        <div class="options-grid">
+          <button class="option-btn" onclick="selectVF(this,1,'VRAI','VRAI')">✅ VRAI</button>
+          <button class="option-btn" onclick="selectVF(this,1,'FAUX','VRAI')">❌ FAUX</button>
+        </div>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-block" data-q="2">
+        <div class="question-text"><span class="question-num">2</span>La grenouille réussit à devenir aussi grosse que le bœuf à la fin de l'histoire.</div>
+        <div class="options-grid">
+          <button class="option-btn" onclick="selectVF(this,2,'VRAI','FAUX')">✅ VRAI</button>
+          <button class="option-btn" onclick="selectVF(this,2,'FAUX','FAUX')">❌ FAUX</button>
+        </div>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="question-block" data-q="4">
+        <div class="question-text"><span class="question-num">3</span>La grenouille demande à sa famille si elle est devenue aussi grosse que le bœuf.</div>
+        <div class="options-grid">
+          <button class="option-btn" onclick="selectVF(this,4,'VRAI','VRAI')">✅ VRAI</button>
+          <button class="option-btn" onclick="selectVF(this,4,'FAUX','VRAI')">❌ FAUX</button>
+        </div>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+      <!-- PARTIE QCM -->
+      <p style="font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--green);margin-bottom:14px;margin-top:8px;">🔘 Questions à choix multiple (QCM)</p>
+
+      <!-- Q3 QCM -->
+      <div class="question-block" data-q="3">
+        <div class="question-text"><span class="question-num">4</span>Pourquoi la grenouille éclate-t-elle à la fin ?</div>
+        <div class="options-grid" style="flex-direction: column;">
+          <button class="option-btn" onclick="selectQCM(this,3,'a','c')">a) Elle mange trop de mouches.</button>
+          <button class="option-btn" onclick="selectQCM(this,3,'b','c')">b) Le bœuf lui fait peur et elle saute trop haut.</button>
+          <button class="option-btn" onclick="selectQCM(this,3,'c','c')">c) Elle gonfle trop en essayant de dépasser sa taille naturelle.</button>
+          <button class="option-btn" onclick="selectQCM(this,3,'d','c')">d) Le soleil la fait exploser.</button>
+        </div>
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+      <!-- Q5 QCM morale -->
+      <div class="question-block" data-q="5">
+        <div class="question-text"><span class="question-num">5</span>Quelle est la morale de cette fable ?</div>
+        <div class="options-grid" style="flex-direction: column;">
+          <button class="option-btn" onclick="selectQCM(this,5,'a','b')">a) Il faut toujours essayer d'être le plus fort.</button>
+          <button class="option-btn" onclick="selectQCM(this,5,'b','b')">b) Il est dangereux de vouloir imiter quelqu'un qui est plus grand que soi.</button>
+          <button class="option-btn" onclick="selectQCM(this,5,'c','b')">c) Les grenouilles et les bœufs ne peuvent pas être amis.</button>
+          <button class="option-btn" onclick="selectQCM(this,5,'d','b')">d) Il faut manger peu pour rester en bonne santé.</button>
+        </div>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+      <button class="check-btn btn-green" onclick="checkVF()">✔ Corriger mes réponses</button>
+      <div class="score-badge" id="scoreBadge1"></div>
+    </div>
+  </div>
+
+  <!-- ======================== EXERCICE 2 : REMETTRE EN ORDRE ======================== -->
+  <div class="section-card sec-order">
+    <div class="section-header">
+      <div class="section-icon">🔀</div>
+      <div>
+        <div class="section-num">EXERCICE 2</div>
+        <h2>Remets les étapes de l'histoire dans l'ordre</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="consigne">📌 Glisse et dépose les étapes dans le bon ordre. Sur téléphone, appuie sur ▲ ▼ pour déplacer.</div>
+      <div class="touch-hint">👆 Appuie sur ▲ ou ▼ pour déplacer chaque étape</div>
+      <div class="sortable-list" id="sortableList"></div>
+      <button class="check-btn btn-pond" onclick="checkOrder()">✔ Vérifier l'ordre</button>
+      <div class="score-badge" id="scoreBadge2"></div>
+    </div>
+  </div>
+
+  <!-- ======================== EXERCICE 3 : TEXTE À TROUS ======================== -->
+  <div class="section-card sec-trous">
+    <div class="section-header">
+      <div class="section-icon">✏️</div>
+      <div>
+        <div class="section-num">EXERCICE 3</div>
+        <h2>Texte à compléter</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="consigne">📌 Complète le résumé avec les mots de la liste. Clique sur un mot, puis sur le blanc à remplir.</div>
+      <div class="trous-text" id="trousText"></div>
+      <div class="word-bank" id="wordBank"></div>
+      <button class="check-btn btn-gold" onclick="checkTrous()">✔ Corriger le texte</button>
+      <div class="score-badge" id="scoreBadge3"></div>
+    </div>
+  </div>
+
+  <!-- ======================== EXERCICE 4 : PRODUCTION ÉCRITE ======================== -->
+  <div class="section-card sec-prod">
+    <div class="section-header">
+      <div class="section-icon">🖊️</div>
+      <div>
+        <div class="section-num">EXERCICE 4</div>
+        <h2>À toi d'écrire !</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="consigne">📌 Imagine que tu es la grenouille <em>avant</em> qu'elle éclate. Tu peux choisir une situation parmi ces trois.</div>
+      <div class="prod-scenario">
+        <div class="scenario-title">🌟 La situation</div>
+        Juste avant d'éclater, la grenouille réalise qu'elle a fait une erreur.
+        Elle rencontre une petite souris qui lui pose des questions.
+        Que lui répond la grenouille ? Qu'est-ce qu'elle a appris ?
+        <br><br>
+        <strong>Écris un court dialogue ou un texte de 3 à 5 phrases.</strong>
+      </div>
+      <div class="prod-starters" id="prodStarters">
+        <button class="starter-chip" onclick="useStarter(this, 'La grenouille dit à la souris : « Je voulais être comme le bœuf, mais ')">💬 La grenouille dit à la souris : « Je voulais être comme le bœuf, mais…</button>
+        <button class="starter-chip" onclick="useStarter(this, 'Si je pouvais recommencer, je ')">💬 Si je pouvais recommencer, je…</button>
+        <button class="starter-chip" onclick="useStarter(this, 'Mon erreur a été de ')">💬 Mon erreur a été de…</button>
+      </div>
+      <textarea class="prod-textarea" id="prodText" placeholder="Écris ton texte ici…" oninput="countWords()"></textarea>
+      <div class="word-count" id="wordCount">0 mot(s) — objectif : 30 mots minimum</div>
+    </div>
+  </div>
+
+  <!-- SCORE GLOBAL -->
+  <div class="global-score" id="globalScore">
+    <h3>📊 Mon bilan de travail</h3>
+    <div id="scoreRows"></div>
+  </div>
+
+  <!-- PDF SECTION -->
+  <div class="pdf-section">
+    <h3>📥 Enregistrer mon travail</h3>
+    <p>Clique sur le bouton pour créer un fichier PDF avec toutes tes réponses.<br>Tu pourras l'envoyer à ton enseignante sur la plateforme.</p>
+    <button class="pdf-btn" onclick="generatePDF()">
+      📄 Télécharger mon travail en PDF
+    </button>
+  </div>
+
+</main>
+
+<script>
+// ============================================================
+// DONNÉES
+// ============================================================
+const vfAnswers = {}; // q -> selected answer
+
+// ORDER exercise
+const stepsData = [
+  { text: "🐸 La grenouille aperçoit un énorme bœuf dans un champ.", correct: 1 },
+  { text: "😲 Elle est impressionnée par la taille du bœuf et veut lui ressembler.", correct: 2 },
+  { text: "💨 Elle commence à gonfler en retenant son souffle.", correct: 3 },
+  { text: "🔄 Elle demande à sa famille si elle est devenue aussi grosse que le bœuf.", correct: 4 },
+  { text: "💨 Elle continue de gonfler encore et encore, de plus en plus.", correct: 5 },
+  { text: "💥 Elle gonfle trop et… elle éclate !", correct: 6 }
+];
+
+// TROUS exercise
+const trousSentences = [
+  { before: "Un jour, une petite ", blank: "grenouille", after: " aperçoit un bœuf dans un champ." },
+  { before: "Elle admire sa ", blank: "taille", after: " et veut devenir aussi grande que lui." },
+  { before: "Elle commence à ", blank: "gonfler", after: " de toutes ses forces." },
+  { before: "Elle demande à sa famille : « Suis-je aussi ", blank: "grosse", after: " que le bœuf ? »" },
+  { before: "Mais elle gonfle trop et elle ", blank: "éclate", after: " à la fin." },
+  { before: "La morale : il ne faut pas essayer d'imiter quelqu'un de plus ", blank: "grand", after: " que soi." }
+];
+const wordBankWords = ["grenouille","taille","gonfler","grosse","éclate","grand","bœuf","petite"];
+
+let selectedWord = null;
+let selectedBlankIndex = null;
+let blankValues = Array(trousSentences.length).fill("");
+
+let ex1Done = false, ex2Done = false, ex3Done = false;
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function() {
+  buildSortable();
+  buildTrous();
+};
+
+// ============================================================
+// EX 1 : VF / QCM
+// ============================================================
+function selectVF(btn, q, chosen, correct) {
+  const block = btn.closest('.question-block');
+  block.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  vfAnswers[q] = { chosen, correct };
+}
+function selectQCM(btn, q, chosen, correct) {
+  const block = btn.closest('.question-block');
+  block.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  vfAnswers[q] = { chosen, correct };
+}
+function checkVF() {
+  const explanations = {
+    1: { VRAI: "✓ Exact ! La grenouille voit le bœuf et veut l'égaler.", FAUX: "✗ Non, c'est vrai : la grenouille voit le bœuf et décide de l'imiter." },
+    2: { VRAI: "✗ Non, c'est faux : la grenouille n'y arrive pas — elle éclate en essayant.", FAUX: "✓ Exact ! Elle échoue et éclate avant d'atteindre la taille du bœuf." },
+    3: { c: "✓ Bravo ! Elle gonfle trop en voulant dépasser sa taille naturelle.", other: "✗ Ce n'est pas la bonne raison. Elle éclate car elle gonfle trop fort." },
+    4: { VRAI: "✓ Exact ! Elle demande bien à sa famille si elle est aussi grosse.", FAUX: "✗ Non, c'est vrai : elle interroge sa famille plusieurs fois." },
+    5: { b: "✓ Parfait ! C'est la morale de La Fontaine : attention à l'orgueil.", other: "✗ Ce n'est pas la bonne morale. La fable nous met en garde contre l'orgueil." }
+  };
+  let correct = 0;
+  for (let q = 1; q <= 5; q++) {
+    const fb = document.getElementById(`fb${q}`);
+    const block = document.querySelector(`.question-block[data-q="${q}"]`);
+    const btns = block.querySelectorAll('.option-btn');
+    if (!vfAnswers[q]) {
+      fb.className = 'feedback show ko';
+      fb.textContent = '⚠ Tu n\'as pas répondu à cette question.';
+      continue;
+    }
+    const { chosen, correct: ans } = vfAnswers[q];
+    const isCorrect = chosen === ans;
+    if (isCorrect) correct++;
+
+    // Style buttons
+    btns.forEach(b => {
+      b.classList.remove('correct','wrong');
+      const btnVal = b.textContent.includes('VRAI') ? 'VRAI' : b.textContent.includes('FAUX') ? 'FAUX' : b.getAttribute('onclick').match(/'([a-z])','[a-z]'\)/)?.[1];
+      if (b.classList.contains('selected')) {
+        b.classList.add(isCorrect ? 'correct' : 'wrong');
+      }
+    });
+
+    fb.className = `feedback show ${isCorrect ? 'ok' : 'ko'}`;
+    if (q === 3) fb.textContent = chosen === ans ? explanations[3].c : explanations[3].other;
+    else if (q === 5) fb.textContent = chosen === ans ? explanations[5].b : explanations[5].other;
+    else fb.textContent = explanations[q][chosen] || '';
+  }
+  const badge = document.getElementById('scoreBadge1');
+  badge.className = `score-badge show ${correct===5?'perfect':correct>=3?'good':'meh'}`;
+  badge.textContent = `${correct >= 5 ? '🌟' : correct >= 3 ? '👍' : '💪'} ${correct} / 5`;
+  ex1Done = true;
+  updateProgress();
+  updateGlobalScore();
+}
+
+// ============================================================
+// EX 2 : ORDER
+// ============================================================
+let dragSrc = null;
+function buildSortable() {
+  const list = document.getElementById('sortableList');
+  const shuffled = [...stepsData].sort(() => Math.random() - 0.5);
+  list.innerHTML = '';
+  shuffled.forEach((step, idx) => {
+    const item = document.createElement('div');
+    item.className = 'sortable-item';
+    item.draggable = true;
+    item.dataset.correct = step.correct;
+    item.innerHTML = `<span class="drag-handle">⠿</span><span class="step-num">${idx+1}</span><span>${step.text}</span>
+      <span style="margin-left:auto;display:flex;gap:4px;">
+        <button onclick="moveItem(this,-1)" style="background:#e3f0fb;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;">▲</button>
+        <button onclick="moveItem(this,1)" style="background:#e3f0fb;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;">▼</button>
+      </span>`;
+    item.addEventListener('dragstart', e => { dragSrc = item; item.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); dragSrc = null; updateStepNums(); });
+    item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('over'); });
+    item.addEventListener('dragleave', () => item.classList.remove('over'));
+    item.addEventListener('drop', e => {
+      e.preventDefault(); item.classList.remove('over');
+      if (dragSrc && dragSrc !== item) {
+        const allItems = [...list.querySelectorAll('.sortable-item')];
+        const srcIdx = allItems.indexOf(dragSrc);
+        const tgtIdx = allItems.indexOf(item);
+        if (srcIdx < tgtIdx) list.insertBefore(dragSrc, item.nextSibling);
+        else list.insertBefore(dragSrc, item);
+        updateStepNums();
+      }
+    });
+    list.appendChild(item);
+  });
+}
+function moveItem(btn, dir) {
+  const item = btn.closest('.sortable-item');
+  const list = item.parentElement;
+  const items = [...list.querySelectorAll('.sortable-item')];
+  const idx = items.indexOf(item);
+  if (dir === -1 && idx > 0) list.insertBefore(item, items[idx-1]);
+  if (dir === 1 && idx < items.length-1) list.insertBefore(items[idx+1], item);
+  updateStepNums();
+}
+function updateStepNums() {
+  document.querySelectorAll('.sortable-item').forEach((item, i) => {
+    item.querySelector('.step-num').textContent = i+1;
+  });
+}
+function checkOrder() {
+  const items = document.querySelectorAll('.sortable-item');
+  let correct = 0;
+  items.forEach((item, i) => {
+    item.classList.remove('correct-pos','wrong-pos');
+    if (parseInt(item.dataset.correct) === i+1) { item.classList.add('correct-pos'); correct++; }
+    else item.classList.add('wrong-pos');
+  });
+  const badge = document.getElementById('scoreBadge2');
+  badge.className = `score-badge show ${correct===6?'perfect':correct>=4?'good':'meh'}`;
+  badge.textContent = `${correct===6?'🌟':correct>=4?'👍':'💪'} ${correct} / 6 dans le bon ordre`;
+  ex2Done = true;
+  updateProgress();
+  updateGlobalScore();
+}
+
+// ============================================================
+// EX 3 : TEXTE À TROUS
+// ============================================================
+function buildTrous() {
+  const container = document.getElementById('trousText');
+  container.innerHTML = '';
+  trousSentences.forEach((s, i) => {
+    const p = document.createElement('p');
+    p.style.marginBottom = '8px';
+    p.innerHTML = `${s.before}<input class="blank-input" id="blank${i}" data-index="${i}" data-answer="${s.blank}" placeholder="______" oninput="blankValues[${i}]=this.value" />${s.after}`;
+    container.appendChild(p);
+  });
+  // Word bank
+  const bank = document.getElementById('wordBank');
+  bank.innerHTML = '<span class="word-bank-label">📚 Mots à utiliser :</span>';
+  [...wordBankWords].sort(() => Math.random()-0.5).forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    chip.onclick = () => {
+      document.querySelectorAll('.word-chip').forEach(c => c.style.outline='');
+      chip.style.outline = '3px solid var(--pond)';
+      selectedWord = w;
+      // Auto-focus next blank
+      const firstEmpty = [...document.querySelectorAll('.blank-input')].find(b => !b.value);
+      if (firstEmpty) firstEmpty.focus();
+    };
+    bank.appendChild(chip);
+  });
+  // Click on blank -> insert selected word
+  document.querySelectorAll('.blank-input').forEach(input => {
+    input.addEventListener('click', () => {
+      if (selectedWord) {
+        input.value = selectedWord;
+        blankValues[parseInt(input.dataset.index)] = selectedWord;
+        // mark chip used
+        document.querySelectorAll('.word-chip').forEach(c => {
+          if (c.textContent === selectedWord) { c.classList.add('used'); c.style.outline=''; }
+        });
+        selectedWord = null;
+      }
+    });
+  });
+}
+function checkTrous() {
+  let correct = 0;
+  trousSentences.forEach((s, i) => {
+    const input = document.getElementById(`blank${i}`);
+    input.classList.remove('correct-blank','wrong-blank');
+    const val = (input.value||'').trim().toLowerCase();
+    const ans = s.blank.toLowerCase();
+    if (val === ans) { input.classList.add('correct-blank'); correct++; }
+    else { input.classList.add('wrong-blank'); input.placeholder = s.blank; }
+  });
+  const badge = document.getElementById('scoreBadge3');
+  badge.className = `score-badge show ${correct===6?'perfect':correct>=4?'good':'meh'}`;
+  badge.textContent = `${correct===6?'🌟':correct>=4?'👍':'💪'} ${correct} / 6 mots corrects`;
+  ex3Done = true;
+  updateProgress();
+  updateGlobalScore();
+}
+
+// ============================================================
+// EX 4 : PRODUCTION ÉCRITE
+// ============================================================
+function useStarter(btn, text) {
+  document.querySelectorAll('.starter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  const ta = document.getElementById('prodText');
+  ta.value = text;
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+  countWords();
+}
+function countWords() {
+  const text = document.getElementById('prodText').value.trim();
+  const count = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
+  const el = document.getElementById('wordCount');
+  el.textContent = `${count} mot(s) — objectif : 30 mots minimum`;
+  el.className = `word-count ${count >= 30 ? 'enough' : ''}`;
+  updateProgress();
+  updateGlobalScore();
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function updateProgress() {
+  const text = document.getElementById('prodText').value.trim();
+  const wordCount = text ? text.split(/\s+/).filter(w=>w.length>0).length : 0;
+  const ex4Done = wordCount >= 15;
+  const done = [ex1Done, ex2Done, ex3Done, ex4Done].filter(Boolean).length;
+  document.getElementById('progressFill').style.width = `${(done/4)*100}%`;
+  document.getElementById('progressLabel').textContent = `${done} / 4 exercices`;
+}
+
+// ============================================================
+// GLOBAL SCORE
+// ============================================================
+function updateGlobalScore() {
+  const gs = document.getElementById('globalScore');
+  gs.classList.add('show');
+  const rows = document.getElementById('scoreRows');
+  const text = document.getElementById('prodText').value.trim();
+  const wc = text ? text.split(/\s+/).filter(w=>w.length>0).length : 0;
+  rows.innerHTML = `
+    <div class="score-row"><span>🎯 Vrai/Faux & QCM</span><span class="score-pill">${ex1Done?document.getElementById('scoreBadge1').textContent:'—'}</span></div>
+    <div class="score-row"><span>🔀 Ordre de l'histoire</span><span class="score-pill">${ex2Done?document.getElementById('scoreBadge2').textContent:'—'}</span></div>
+    <div class="score-row"><span>✏️ Texte à trous</span><span class="score-pill">${ex3Done?document.getElementById('scoreBadge3').textContent:'—'}</span></div>
+    <div class="score-row"><span>🖊️ Production écrite</span><span class="score-pill">${wc>0?wc+' mots écrits':'—'}</span></div>
+  `;
+}
+
+// ============================================================
+// PDF GENERATION
+// ============================================================
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const name = document.getElementById('studentName').value || 'Élève';
+  const date = new Date().toLocaleDateString('fr-FR');
+  let y = 20;
+  const W = 190;
+  const margin = 10;
+  const pageH = 287;
+
+  function checkPage(needed) {
+    if (y + needed > pageH - 10) { doc.addPage(); y = 20; }
+  }
+
+  // Title
+  doc.setFillColor(45, 122, 58);
+  doc.rect(0, 0, 210, 38, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('La grenouille qui veut se faire aussi grosse que le boeuf', 105, 14, { align: 'center' });
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Eleve : ${name}     |     Date : ${date}     |     CM2`, 105, 25, { align: 'center' });
+  y = 48;
+
+  doc.setTextColor(44, 44, 44);
+
+  function sectionTitle(title, color) {
+    checkPage(14);
+    doc.setFillColor(...color);
+    doc.rect(margin, y, W, 9, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(title, margin + 3, y + 6.5);
+    doc.setTextColor(44,44,44);
+    y += 13;
+  }
+
+  function writeLine(txt, size=10, bold=false, indent=0) {
+    doc.setFontSize(size);
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    const lines = doc.splitTextToSize(txt, W - indent - 2);
+    checkPage(lines.length * (size * 0.45 + 2));
+    doc.text(lines, margin + indent, y);
+    y += lines.length * (size * 0.45 + 2) + 1;
+  }
+
+  // EX 1
+  sectionTitle('Exercice 1 : Vrai / Faux et QCM', [45, 122, 58]);
+  for (let q = 1; q <= 5; q++) {
+    const ans = vfAnswers[q];
+    if (ans) {
+      const icon = ans.chosen === ans.correct ? '[✓]' : '[✗]';
+      writeLine(`Q${q}: Reponse choisie : ${ans.chosen}  ${icon}`, 10);
+    } else {
+      writeLine(`Q${q}: Non repondu`, 10);
+    }
+    y += 1;
+  }
+  y += 4;
+
+  // EX 2
+  sectionTitle('Exercice 2 : Ordre de l\'histoire', [26, 107, 138]);
+  const items = document.querySelectorAll('.sortable-item');
+  items.forEach((item, i) => {
+    const correct = parseInt(item.dataset.correct) === i+1;
+    const stepText = item.querySelectorAll('span')[2].textContent.trim().replace(/[^\x00-\x7F]/g, '').trim();
+    writeLine(`${i+1}. ${stepText} ${correct ? '[OK]' : '[A revoir]'}`, 9.5);
+  });
+  y += 4;
+
+  // EX 3
+  sectionTitle('Exercice 3 : Texte a trous', [180, 120, 0]);
+  trousSentences.forEach((s, i) => {
+    const input = document.getElementById(`blank${i}`);
+    const val = input ? input.value || '____' : '____';
+    const ans = s.blank;
+    const ok = val.toLowerCase().trim() === ans.toLowerCase();
+    writeLine(`${s.before}[ ${val} ]${s.after}  ${ok ? '[Correct]' : `[Reponse : ${ans}]`}`, 9.5);
+    y += 1;
+  });
+  y += 4;
+
+  // EX 4
+  sectionTitle('Exercice 4 : Production ecrite', [180, 60, 60]);
+  const prodText = document.getElementById('prodText').value || '(Pas de texte ecrit)';
+  writeLine('Texte de l\'eleve :', 10, true);
+  y += 1;
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  const lines = doc.splitTextToSize(prodText, W - 4);
+  // Box
+  const boxH = Math.max(lines.length * 5.5 + 8, 30);
+  checkPage(boxH + 4);
+  doc.setDrawColor(220, 80, 80);
+  doc.setFillColor(253, 240, 240);
+  doc.roundedRect(margin, y, W, boxH, 3, 3, 'FD');
+  doc.text(lines, margin + 3, y + 6);
+  y += boxH + 6;
+
+  // Scores
+  checkPage(30);
+  doc.setFillColor(240, 248, 240);
+  doc.rect(margin, y, W, 28, 'F');
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(45, 122, 58);
+  doc.text('Bilan', margin + 3, y + 8);
+  doc.setFontSize(9.5);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(44, 44, 44);
+  const b1 = document.getElementById('scoreBadge1').textContent || '-';
+  const b2 = document.getElementById('scoreBadge2').textContent || '-';
+  const b3 = document.getElementById('scoreBadge3').textContent || '-';
+  const wc = (document.getElementById('prodText').value||'').trim().split(/\s+/).filter(w=>w.length>0).length;
+  doc.text(`Ex.1 Vrai/Faux: ${b1}   |   Ex.2 Ordre: ${b2}   |   Ex.3 Trous: ${b3}   |   Ex.4 Production: ${wc} mots`, margin + 3, y + 18);
+
+  // Footer
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('Activite creee avec Claude AI | Fable de La Fontaine', 105, 290, { align: 'center' });
+
+  doc.save(`Grenouille_${name.replace(/\s+/g,'_')}_${date.replace(/\//g,'-')}.pdf`);
+}
+</script>
+
+</body>
+</html>
